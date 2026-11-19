@@ -2045,7 +2045,11 @@ private func detectMethod() -> (InjectionMethod, (UInt32, UInt32, UInt32)) {
         "com.microsoft.VSCode", "com.google.antigravity-ide", "com.todesktop.cursor",
         "com.visualstudio.code.oss", "com.vscodium",
         // Terminals
-        "dev.warp.Warp-Stable", "com.mitchellh.ghostty", "net.kovidgoyal.kitty",
+        // Ghostty is intentionally absent: it uses the default (.fast, 1/3/1.5ms). Measured
+        // with an automated Telex run in canonical (cat) and raw-mode (TUI) sinks at 12–40ms
+        // per keystroke: default delays passed every run, while (8/25/8ms) + slow settle
+        // (~70ms blocking per replacement) garbled output once typing outpaced it (20ms/key).
+        "dev.warp.Warp-Stable", "net.kovidgoyal.kitty",
         "com.apple.Terminal", "com.googlecode.iterm2", "io.alacritty",
         "com.github.wez.wezterm", "co.zeit.hyper", "org.tabby",
         "com.raphaelamorim.rio", "com.termius-dmg.mac",
