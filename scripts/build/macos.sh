@@ -224,6 +224,12 @@ if [ -d "GoNhanh.xcodeproj" ]; then
     else
         # Use Developer ID cert if available, fallback to ad-hoc
         DEV_CERT=$(security find-identity -v -p codesigning | grep "Developer ID Application" | head -1 | sed 's/.*"\(.*\)".*/\1/' || echo "")
+        # Local self-signed cert (untrusted, so no -v): keeps a stable designated requirement
+        # across rebuilds so macOS keeps the Accessibility grant. Override via LOCAL_SIGNING_IDENTITY.
+        LOCAL_CERT="${LOCAL_SIGNING_IDENTITY:-GoNhanh Local Dev}"
+        if [ -z "$DEV_CERT" ] && security find-identity -p codesigning | grep -q "\"$LOCAL_CERT\""; then
+            DEV_CERT="$LOCAL_CERT"
+        fi
         if [ -n "$DEV_CERT" ]; then
             codesign --force --deep --sign "$DEV_CERT" \
                 --entitlements GoNhanh.entitlements \
